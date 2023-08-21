@@ -19,3 +19,14 @@
 
 # Go workspace file
 go.work
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
