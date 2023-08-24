@@ -108,7 +108,7 @@ func main() {
 			log.Error(err)
 			return
 		}
-		log.Infof("Screenshot successfuly created: %s", screenshotPath)
+		log.Infof("Screenshot successfuly created: %s", *screenshotPath)
 
 	} else {
 		lambda.Start(Handler)

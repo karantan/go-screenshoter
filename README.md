@@ -118,6 +118,40 @@ In summary, while Docker offers great flexibility, its advantages weren't necess
 this project, and its overhead would've outweighed its benefits.
 Thus, AWS Lambda Layers proved to be a more efficient and streamlined choice for our needs.
 
+## Running Locally
+
+If you'd like to test and run `go-screenshoter` on your local machine, you can easily
+do so with the following command:
+
+```bash
+go run main.go --url=<URL> --path=<screenshot_path>
+```
+
+Replace `<URL>` with the website URL you'd like to capture, and `<screenshot_path>`
+with the local path where you'd like the screenshot to be saved.
+
+For example:
+
+```bash
+go run main.go --url=https://www.google.com --path=lib/google.com.png
+```
+
+This provides a quick way to test the functionality before deploying it or to simply
+use the tool for local screenshot capturing tasks.
+
+For testing specific parts of the code you should use unit tests and change them to
+your needs.
+
+Keep in mind that if you want to test the uploading to R2 you'll need to manually add
+the following variables to the `.env` file:
+
+```
+CF_ACCOUNT_ID=...
+CF_ACCESS_KEY_ID=...
+CF_ACCESS_KEY_SECRET=...
+CF_BUCKET_NAME=...
+```
+
 ### Helpful Documentation
 
 During the development of this project, certain resources proved invaluable:
