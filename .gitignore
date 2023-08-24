@@ -30,3 +30,17 @@ devenv.local.nix
 # pre-commit
 .pre-commit-config.yaml
 
+# Serverless directories
+.serverless
+
+# golang output binary directory
+bin
+
+# https://github.com/joho/godotenv
+.env
+
+# vs code local settings
+.vscode
+
+# chromium binary
+layer/chromium

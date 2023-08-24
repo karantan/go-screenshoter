@@ -1,0 +1,6 @@
+{
+    "resource": "/",
+    "path": "/screenshot",
+    "httpMethod": "POST",
+    "body": "{\"url\": \"https://wikipedia.org/\"}"
+}

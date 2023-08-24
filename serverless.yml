@@ -1,0 +1,65 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+---
+service: screenshoter
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: go1.x
+  timeout: 45
+
+# https://www.serverless.com/framework/docs/providers/aws/guide/functions
+functions:
+  screenshot:
+    handler: bin/screenshoter
+    timeout: 30  # 30 is max
+    layers:
+      # Google Chrome for AWS Lambda as a layer
+      # Make sure you use the latest version depending on the region
+      # https://github.com/shelfio/chrome-aws-lambda-layer
+      - {Ref: ChromiumLambdaLayer}  # ${CamelCaseLayerName} + LambdaLayer
+    events:
+      - httpApi:
+          path: /screenshot
+          method: post
+    environment:
+      # Add these in AWS CP > Systems Manager > Parameter Store
+      # https://www.serverless.com/framework/docs/providers/aws/guide/variables#reference-variables-using-the-ssm-parameter-store
+      CF_ACCOUNT_ID: ${ssm:/CF_ACCOUNT_ID}
+      CF_ACCESS_KEY_ID: ${ssm:/CF_ACCESS_KEY_ID}
+      CF_ACCESS_KEY_SECRET: ${ssm:/CF_ACCESS_KEY_SECRET}
+      CF_BUCKET_NAME: ${ssm:/CF_BUCKET_NAME}
+      APP_ENV: prod
+      # AWS Lambda provides a /tmp directory with 512 MB of storage for your
+      # function execution. This space is ephemeral and is deleted once the
+      # function execution ends.
+      # https://docs.aws.amazon.com/lambda/latest/dg/API_EphemeralStorage.html
+      TEMPORARY_STORAGE: /tmp
+layers: # https://www.serverless.com/framework/docs/providers/aws/guide/layers
+  chromium:
+    path: layer
+    package:
+      include:  # https://github.com/serverless/serverless/issues/5892
+        - ./**
+    description: Chromium binary
+    compatibleRuntimes:
+      - go1.x
+    compatibleArchitectures:
+      - x86_64
+
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
