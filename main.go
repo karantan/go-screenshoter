@@ -17,7 +17,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"os"
@@ -59,20 +58,21 @@ func Handler(request events.APIGatewayProxyRequest) (Response, error) {
 	if err != nil {
 		return Response{StatusCode: 503}, err
 	}
+	fileName := hostname + ".png"
 
-	screenshotPath := path.Join(os.Getenv("TEMPORARY_STORAGE"), hostname+".png")
+	screenshotPath := path.Join(os.Getenv("TEMPORARY_STORAGE"), fileName)
 
 	err = naviga.TakeScreenshot(body.URL, screenshotPath)
 	if err != nil {
 		return Response{StatusCode: 503}, err
 	}
 
-	err = storage.Upload(hostname, screenshotPath)
+	err = storage.Upload(fileName, screenshotPath)
 	if err != nil {
 		return Response{StatusCode: 503}, err
 	}
 
-	presignURL, err := storage.GetPresignURL(hostname)
+	presignURL, err := storage.GetPresignURL(fileName)
 	if err != nil {
 		return Response{StatusCode: 503}, err
 	}
@@ -85,12 +85,9 @@ func Handler(request events.APIGatewayProxyRequest) (Response, error) {
 		return Response{StatusCode: 503}, err
 	}
 
-	var buf bytes.Buffer
-	json.HTMLEscape(&buf, respBody)
 	resp := Response{
-		StatusCode:      200,
-		IsBase64Encoded: false,
-		Body:            buf.String(),
+		StatusCode: 200,
+		Body:       string(respBody),
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},

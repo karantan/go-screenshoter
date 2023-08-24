@@ -46,8 +46,13 @@ Before diving into `go-screenshoter`, ensure you have the following installed:
    Next you'll need to download the chromium binary compatible with x86_64.
    E.g. [alixaxel/chrome-aws-lambda](https://raw.githubusercontent.com/alixaxel/chrome-aws-lambda/master/bin/chromium.br)
 
-   Extract it in the `layer` folder and make sure it has executable permissions
-   (`chmod 777 chromium`).
+   Extract it in the `layer` folder and make sure it has executable permissions.
+
+   ```bash
+   wget -P layer https://raw.githubusercontent.com/alixaxel/chrome-aws-lambda/master/bin/chromium.br
+   brotli --decompress --rm --output=layer/chromium layer/chromium.br
+   chmod 777 layer/chromium
+   ```
 
    Follow Serverless framework guidelines to deploy the function to AWS Lambda. Ensure
    your AWS credentials are properly set up.
@@ -91,6 +96,27 @@ functions:
 
 The Chromium binary resides within the `layer` folder of this repository. It was
 downloaded from [alixaxel/chrome-aws-lambda](https://raw.githubusercontent.com/alixaxel/chrome-aws-lambda/master/bin/chromium.br)
+
+### Rationale for Using Lambda Layers over Docker
+
+While it is technically possible to use Docker containers to bundle Chromium and other
+dependencies, there are a few compelling reasons why I chose AWS Lambda Layers over Docker:
+
+1. **Simplicity**: Introducing Docker means adding another layer of complexity. To be
+proficient, one needs to understand Docker concepts, write and optimize Dockerfiles,
+and potentially grapple with issues related to container orchestration.
+
+2. **Maintenance**: Using Docker implies that there's a need to maintain the Docker
+images. As software evolves, the Docker image needs to be updated, possibly re-tested
+and then re-deployed. This introduces an ongoing commitment to upkeep.
+
+3. **Faster Deployment**: Deployments using AWS Lambda Layers are considerably faster
+compared to deploying Docker containers. This speed becomes especially valuable during
+iterative development or frequent deployments.
+
+In summary, while Docker offers great flexibility, its advantages weren't necessary for
+this project, and its overhead would've outweighed its benefits.
+Thus, AWS Lambda Layers proved to be a more efficient and streamlined choice for our needs.
 
 ### Helpful Documentation
 
