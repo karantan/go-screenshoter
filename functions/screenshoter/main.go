@@ -18,7 +18,6 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"os"
 	"path"
 
@@ -62,10 +61,10 @@ func Handler(request events.APIGatewayProxyRequest) (Response, error) {
 
 	screenshotPath := path.Join(os.Getenv("TEMPORARY_STORAGE"), fileName)
 
-	err = naviga.TakeScreenshot(body.URL, screenshotPath)
-	if err != nil {
-		return Response{StatusCode: 503}, err
-	}
+	naviga.TakeScreenshot(body.URL, screenshotPath)
+	// if err != nil {
+	// 	return Response{StatusCode: 503}, err
+	// }
 
 	err = storage.Upload(fileName, screenshotPath)
 	if err != nil {
@@ -97,20 +96,5 @@ func Handler(request events.APIGatewayProxyRequest) (Response, error) {
 }
 
 func main() {
-	appEnv := os.Getenv("APP_ENV")
-	if appEnv == "dev" {
-		url := flag.String("url", "https://www.wikipedia.org/", "Url of a website you want to make a screenshot")
-		screenshotPath := flag.String("path", "lib/wikipedia.org.png", "Path where the screenshot will be stored")
-		flag.Parse()
-
-		err := naviga.TakeScreenshot(*url, *screenshotPath)
-		if err != nil {
-			log.Error(err)
-			return
-		}
-		log.Infof("Screenshot successfuly created: %s", *screenshotPath)
-
-	} else {
-		lambda.Start(Handler)
-	}
+	lambda.Start(Handler)
 }

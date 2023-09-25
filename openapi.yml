@@ -1,0 +1,61 @@
+---
+#
+# OpenAPI3 specs and docs:
+# - https://spec.openapis.org/oas/v3.1.0
+# - https://swagger.io/docs/specification
+#
+openapi: "3.0.0"
+info:
+  description: "A simple yet effective project that demonstrates the integration
+    of several powerful tools to capture screenshots of web pages and upload
+    them to Cloudflare's R2 storage."
+  title: "Screenshoter"
+  version: "1.0.0"
+servers:
+  - url: https://383flitwid.execute-api.us-east-1.amazonaws.com
+    description: AWS Lambda endpoint
+paths:
+  /screenshot:
+    post:
+      description: Make a screenshot of a website
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreenshotRequest'
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenshotResponse'
+        "400":
+          description: Bad Request
+        "408":
+          description: Request Timeout
+        "500":
+          description: Internal Server Error
+        "503":
+          description: Service Unavailable
+
+components:
+  schemas:
+    ScreenshotRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          example: https://foo.com
+      required:
+        - url
+    ScreenshotResponse:
+      type: object
+      properties:
+        screenshot:
+          type: string
+        url:
+          type: string
+      required:
+        - screenshot
+        - url
