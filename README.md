@@ -36,7 +36,8 @@ Before diving into `go-screenshoter`, ensure you have the following installed:
    With `devenv` and `Nix` already installed:
 
    ```bash
-   direnv shell
+   devenv init
+   devenv shell
    ```
 
    This will setup a consistent and reproducible developer environment for you.
